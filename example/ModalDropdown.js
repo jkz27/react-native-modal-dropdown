@@ -31,6 +31,7 @@ export default class ModalDropdown extends Component {
     options: PropTypes.array.isRequired,
     accessible: PropTypes.bool,
     animated: PropTypes.bool,
+    transparent: PropTypes.bool,
     showsVerticalScrollIndicator: PropTypes.bool,
     keyboardShouldPersistTaps: PropTypes.string,
     style: PropTypes.oneOfType([
@@ -74,6 +75,7 @@ export default class ModalDropdown extends Component {
     defaultIndex: -1,
     defaultValue: 'Please select...',
     options: null,
+    transparent: true,
     animated: true,
     showsVerticalScrollIndicator: true,
     keyboardShouldPersistTaps: 'never',
@@ -209,7 +211,7 @@ export default class ModalDropdown extends Component {
   };
 
   _renderModal() {
-    const { animated, accessible, dropdownStyle } = this.props;
+    const { animated, accessible, dropdownStyle, transparent} = this.props;
     const { showDropdown, loading } = this.state;
 
     if (showDropdown && this._buttonFrame) {
@@ -220,7 +222,7 @@ export default class ModalDropdown extends Component {
         <Modal
           animationType={animationType}
           visible
-          transparent
+          transparent={transparent}
           onRequestClose={this._onRequestClose}
           supportedOrientations={[
             'portrait',
