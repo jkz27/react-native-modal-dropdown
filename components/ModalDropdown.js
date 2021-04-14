@@ -33,6 +33,7 @@ export default class ModalDropdown extends Component {
     backdropTransitionOutTiming: PropTypes.number,
     useNativeDriver: PropTypes.bool,
     useNativeDriverForBackdrop: PropTypes.bool,
+    onBackdropPress: PropTypes.func,
   
     disabled: PropTypes.bool,
     multipleSelect: PropTypes.bool,
@@ -102,12 +103,14 @@ export default class ModalDropdown extends Component {
   };
 
   static defaultProps = {
+    //backdrop
     hasBackdrop: true,
     backdropColor: 'black',
     backdropOpacity: 0.7,
     backdropTransitionInTiming: 300,
     backdropTransitionOutTiming: 300,
     useNativeDriver: false,
+    onBackdropPress: () => null,
 
     disabled: false,
     multipleSelect: false,
