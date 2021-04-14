@@ -345,6 +345,7 @@ export default class ModalDropdown extends Component {
             <View style={styles.modal}>
               <View style={[styles.dropdown, dropdownStyle, frameStyle]}>
                 {loading ? this._renderLoading() : this._renderDropdown()}
+                {this.makeBackdrop()}
               </View>
             </View>
           </TouchableWithoutFeedback>
