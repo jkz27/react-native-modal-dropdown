@@ -14,6 +14,7 @@ import {
   Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
+import * as animatable from 'react-native-animatable';
 
 const TOUCHABLE_ELEMENTS = [
   'TouchableHighlight',
@@ -24,6 +25,15 @@ const TOUCHABLE_ELEMENTS = [
 
 export default class ModalDropdown extends Component {
   static propTypes = {
+    // Adding backdrops
+    hasBackdrop: PropTypes.bool,
+    backdropColor: PropTypes.string,
+    backdropOpacity: PropTypes.number,
+    backdropTransitionInTiming: PropTypes.number,
+    backdropTransitionOutTiming: PropTypes.number,
+    useNativeDriver: PropTypes.bool,
+    useNativeDriverForBackdrop: PropTypes.bool,
+  
     disabled: PropTypes.bool,
     multipleSelect: PropTypes.bool,
     scrollEnabled: PropTypes.bool,
@@ -92,6 +102,13 @@ export default class ModalDropdown extends Component {
   };
 
   static defaultProps = {
+    hasBackdrop: true,
+    backdropColor: 'black',
+    backdropOpacity: 0.7,
+    backdropTransitionInTiming: 300,
+    backdropTransitionOutTiming: 300,
+    useNativeDriver: false,
+
     disabled: false,
     multipleSelect: false,
     scrollEnabled: true,
@@ -112,6 +129,9 @@ export default class ModalDropdown extends Component {
     this._buttonFrame = null;
 
     this.state = {
+      // backdrop
+      showContent: false,
+
       accessible: !!props.accessible,
       loading: !props.options,
       showDropdown: false,
@@ -150,6 +170,53 @@ export default class ModalDropdown extends Component {
         {this._renderButton()}
         {this._renderModal()}
       </View>
+    );
+  }
+
+  // backdrop
+  makeBackdrop = () => {
+    // use Loading to replace showContent
+    let {loading} = this.state;
+
+    if (!this.props.hasBackdrop) {
+      return null;
+    }
+
+    const {
+      // customBackdrop,
+      backdropColor,
+      useNativeDriver,
+      useNativeDriverForBackdrop,
+      onBackdropPress,
+    } = this.props;
+    // const hasCustomBackdrop = !!this.props.customBackdrop;
+
+    const backdropComputedStyle = [
+      {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        backgroundColor:
+          loading? backdropColor : 'transparent',
+      },
+    ];
+
+    const backdropWrapper = (
+      <animatable.View
+        ref={ref => (this.backdropRef = ref)}
+        useNativeDriver={
+          useNativeDriverForBackdrop !== undefined
+            ? useNativeDriverForBackdrop
+            : useNativeDriver
+        }
+        style={[styles.backdrop, backdropComputedStyle]}>
+        {/* {hasCustomBackdrop && customBackdrop} */}
+      </animatable.View>
+    );
+
+    return (
+      <TouchableWithoutFeedback onPress={onBackdropPress}>
+        {backdropWrapper}
+      </TouchableWithoutFeedback>
     );
   }
 
@@ -449,6 +516,15 @@ export default class ModalDropdown extends Component {
 }
 
 const styles = StyleSheet.create({
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    opacity: 0,
+    backgroundColor: 'black',
+  },
   button: {
     // justifyContent: 'center',
     flexDirection:'row',
